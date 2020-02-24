@@ -84,7 +84,7 @@ TAS Toolbelt GUI - Helps with Intune/M365 Testing
         #Map drives (FPS2-TAS-VMP.tas.secl.com.au)
         $driveMappingConfig.GetEnumerator() | ForEach-Object {
         New-PSDrive -PSProvider FileSystem -Name $PSItem.DriveLetter -Root $PSItem.UNCPath -Description $PSItem.Description -Persist -Scope global
-        (New-Object -ComObject Shell.Application).NameSpace("$($PSItem.DriveLEtter):").Self.Name=$PSItem.Description
+        (New-Object -ComObject Shell.Application).NameSpace("$($PSItem.DriveLetter):").Self.Name=$PSItem.Description
         }
 
         #Change result status so that it doesn't loop infinetly
