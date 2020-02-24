@@ -75,14 +75,14 @@ return $outcome
    $driveMappingConfig=@()
    $driveMappingConfig+= [PSCUSTOMOBJECT]@{
     DriveLetter = "H"
-    UNCPath= "\\fps2-tas-vmp.tas.secl.com.au\Data\User\Production\$env:USERNAME"
+    UNCPath= "\\$server\Data\User\Production\$env:USERNAME"
     Description="HomeDrive"
    }
 
-   $driveMappingConfig+=  [PSCUSTOMOBJECT]@{
+   $driveMappingConfig+= [PSCUSTOMOBJECT]@{
     DriveLetter = "N"
-    UNCPath= "\\fps2-tas-vmp.tas.secl.com.au\DATA"
-    Description="TasDATA"
+    UNCPath= "\\$server\DATA"
+    Description="DATA"
    }
 
    while($result -eq 'Retry'){   
