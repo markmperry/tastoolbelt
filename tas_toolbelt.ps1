@@ -3,12 +3,30 @@ TAS Toolbelt GUI - Helps with Intune/M365 Testing
 1. Drive Mapping
 ######################################################>
 
-###pre-requisites
+### pre-requisites ###
 
  #load windows forms
  Add-Type -assembly System.Windows.Forms
 
-###end pre-requisites
+### end pre-requisites ###
+
+### functions ###
+# test if FPS server is contactable
+function test-fps-connectivity {
+ try {
+    #Tests for a specific port (CIFS/NBT) being open to the file server 
+    $null = New-Object System.Net.Sockets.TCPClient -ArgumentList $server,$portToCheck
+    #If port is open it sets the $outcome variable accordingly
+    $outcome = 'PortOpen'
+ }
+ catch {
+    #If port is closed it sets the $outcome variable accordingly
+    $outcome = 'PortClosed'
+ }
+return $outcome
+}
+
+### end functions ###
 
 #define variables
  $result = 'Retry'
@@ -67,20 +85,12 @@ TAS Toolbelt GUI - Helps with Intune/M365 Testing
     Description="TasDATA"
    }
 
-   while($result -eq 'Retry'){
-    try {
-        #Tests for a specific port (CIFS/NBT) being open to the file server 
-        $null = New-Object System.Net.Sockets.TCPClient -ArgumentList $server,$portToCheck
-        #If port is open it sets the $outcome variable accordingly
-        $outcome = 'PortOpen'
-    }
-    catch {
-        #If port is closed it sets the $outcome variable accordingly
-        $outcome = 'PortClosed'
-    }
+   while($result -eq 'Retry'){   
+    #call function to test file/print server connectivity
+    test-fps-connectivity
 
     #If the port is open... map the drive!
-    if ($outcome -eq 'PortOpen'){
+    if ($output -eq 'PortOpen'){
         #Map drives (FPS2-TAS-VMP.tas.secl.com.au)
         $driveMappingConfig.GetEnumerator() | ForEach-Object {
         New-PSDrive -PSProvider FileSystem -Name $PSItem.DriveLetter -Root $PSItem.UNCPath -Description $PSItem.Description -Persist -Scope global
@@ -89,7 +99,6 @@ TAS Toolbelt GUI - Helps with Intune/M365 Testing
 
         #Change result status so that it doesn't loop infinetly
         $result = "Success"
-
     } 
     else{ 
         # show a MsgBox if error connecting 
